@@ -61,14 +61,13 @@
     "vaul": "^0.9.9",
     "vite": "^5.4.19",
     "zod": "^3.25.76",
-    
     "@sendgrid/mail": "^7.6.2",
     "googleapis": "^115.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@tailwindcss/typography": "^0.5.16",
-    "@types/node": "^22.16.5",
+    "@types=node": "^22.16.5",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react-swc": "^3.11.0",
