@@ -3,6 +3,12 @@ import { Calendar, Camera, Star, CheckCircle2 } from "lucide-react";
 import bgImage from "@/assets/bg.jpg";
 
 export const HeroSection = () => {
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   return (
     <section
       id="home"
@@ -35,12 +41,12 @@ export const HeroSection = () => {
           {/* Description */}
           <p className="text-lg text-white/80 mb-8 max-w-2xl">
             From capturing your child's precious smile to fast passport photos in 10 minutes, 
-            we deliver excellence with patience and care. Over 10 years of trusted service.
+            we deliver excellence with patience and care. Over 25+ years of trusted service.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            <Button size="lg" className="text-lg px-8 py-6 gap-2">
+            <Button size="lg" className="text-lg px-8 py-6 gap-2" onClick={() => scrollToSection("contact")}>
               <Calendar className="h-5 w-5" />
               Book Your Shoot Now
             </Button>

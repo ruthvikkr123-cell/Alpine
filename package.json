@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "chmod +x node_modules/.bin/vite && npx vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -59,7 +59,11 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.9",
-    "zod": "^3.25.76"
+    "vite": "^5.4.19",
+    "zod": "^3.25.76",
+    
+    "@sendgrid/mail": "^7.6.2",
+    "googleapis": "^115.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
@@ -77,7 +81,6 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.38.0",
-    "vite": "^5.4.19"
+    "typescript-eslint": "^8.38.0"
   }
 }

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Phone, MessageCircle, Clock, Shield, CheckCircle2 } from "lucide-react";
+import { Phone, MessageCircle, MessageSquare, Clock, Shield, CheckCircle2 } from "lucide-react";
 
 export const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -12,11 +12,54 @@ export const ContactSection = () => {
     email: "",
     service: "",
     message: "",
+    hp: "", // honeypot
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [statusText, setStatusText] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+
+    setStatus("loading");
+    setStatusText("Sending your booking request...");
+
+    try {
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        setStatus("success");
+        setStatusText("Your booking request has been sent! We will contact you shortly.");
+
+        // Reset form
+        setFormData({
+          name: "",
+          phone: "",
+          email: "",
+          service: "",
+          message: "",
+          hp: "",
+        });
+      } else if (data.status === "ignored") {
+        setStatus("success");
+        setStatusText("Thank you! (Request filtered as spam safely).");
+      } else {
+        setStatus("error");
+        setStatusText("Something went wrong. Please try again or contact us directly.");
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+      setStatusText("Failed to send. Check your internet connection.");
+    }
   };
 
   return (
@@ -39,6 +82,17 @@ export const ContactSection = () => {
               <p className="text-muted-foreground mb-6">Fill out the form below and we'll get back to you shortly</p>
               
               <form onSubmit={handleSubmit} className="space-y-6">
+                
+                {/* Honeypot: hidden anti-bot field */}
+                <input
+                  type="text"
+                  value={formData.hp}
+                  onChange={(e) => setFormData({ ...formData, hp: e.target.value })}
+                  style={{ display: "none" }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
                     Your Name *
@@ -86,7 +140,10 @@ export const ContactSection = () => {
                   <label htmlFor="service" className="block text-sm font-medium text-foreground mb-2">
                     Service Required *
                   </label>
-                  <Select value={formData.service} onValueChange={(value) => setFormData({ ...formData, service: value })}>
+                  <Select
+                    value={formData.service}
+                    onValueChange={(value) => setFormData({ ...formData, service: value })}
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select a service" />
                     </SelectTrigger>
@@ -114,10 +171,24 @@ export const ContactSection = () => {
                   />
                 </div>
 
-                <Button type="submit" size="lg" className="w-full">
-                  Send Booking Request
+                <Button type="submit" size="lg" className="w-full" disabled={status === "loading"}>
+                  {status === "loading" ? "Sending..." : "Send Booking Request"}
                 </Button>
-                
+
+                {status !== "idle" && (
+                  <p
+                    className={`text-center text-sm ${
+                      status === "success"
+                        ? "text-green-600"
+                        : status === "error"
+                        ? "text-red-600"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {statusText}
+                  </p>
+                )}
+
                 <div className="flex items-center gap-2 text-sm text-muted-foreground justify-center">
                   <Shield className="h-4 w-4" />
                   <span>Your information is safe and secure</span>
@@ -125,84 +196,59 @@ export const ContactSection = () => {
               </form>
             </div>
 
-            {/* Contact Information */}
-            <div className="space-y-6 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
-              {/* Quick Contact */}
-              <div className="bg-background rounded-2xl p-6 shadow-lg">
-                <h3 className="text-xl font-bold text-foreground mb-4">Quick Contact</h3>
-                
-                <div className="space-y-4">
-                  <a 
-                    href="tel:+919849025010" 
-                    className="flex items-center gap-4 p-4 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity"
-                  >
-                    <Phone className="h-6 w-6" />
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <div className="bg-background rounded-2xl p-8 shadow-lg animate-fade-in-up">
+                <h3 className="text-2xl font-bold text-foreground mb-6">Get in Touch</h3>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Phone className="h-6 w-6 text-primary" />
                     <div>
-                      <div className="text-sm font-medium">Call Us Now</div>
-                      <div className="text-lg font-bold">+91 98490 25010</div>
+                      <p className="font-medium text-foreground">Phone</p>
+                      <a href="tel:+919849025010" className="text-muted-foreground hover:text-primary transition-colors">+91 9849025010</a>
                     </div>
-                  </a>
-
-                  <a 
-                    href="https://wa.me/919849045010" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-4 p-4 bg-success text-white rounded-xl hover:opacity-90 transition-opacity"
-                  >
-                    <MessageCircle className="h-6 w-6" />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <MessageSquare className="h-6 w-6 text-primary" />
                     <div>
-                      <div className="text-sm font-medium">WhatsApp Us</div>
-                      <div className="text-lg font-bold">Chat on WhatsApp</div>
+                      <p className="font-medium text-foreground">WhatsApp</p>
+                      <a href="https://wa.me/919849025010" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">+91 9849025010</a>
                     </div>
-                  </a>
-                </div>
-
-                <div className="mt-6 pt-6 border-t border-border">
-                  <div className="flex items-center gap-3 text-foreground">
-                    <Clock className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <MessageCircle className="h-6 w-6 text-primary" />
                     <div>
-                      <div className="font-medium">Working Hours</div>
-                      <div className="text-sm text-muted-foreground">Mon-Sun: 9 AM - 8 PM</div>
+                      <p className="font-medium text-foreground">Email</p>
+                      <p className="text-muted-foreground">studio.alpine@gmail.com</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Clock className="h-6 w-6 text-primary" />
+                    <div>
+                      <p className="font-medium text-foreground">Hours</p>
+                      <p className="text-muted-foreground">Mon-Fri: 9AM-6PM</p>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Why Book With Us */}
-              <div className="bg-background rounded-2xl p-6 shadow-lg">
-                <h3 className="text-xl font-bold text-foreground mb-4">Why Book With Us?</h3>
-                
+              <div className="bg-background rounded-2xl p-8 shadow-lg animate-fade-in-up">
+                <h3 className="text-2xl font-bold text-foreground mb-6">Why Choose Us?</h3>
                 <div className="space-y-4">
-                  <div className="flex gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <div className="font-semibold text-foreground">No Advance Payment</div>
-                      <div className="text-sm text-muted-foreground">Pay only after you're satisfied with the results</div>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    <span className="text-muted-foreground">Professional quality</span>
                   </div>
-
-                  <div className="flex gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <div className="font-semibold text-foreground">Walk-In Friendly</div>
-                      <div className="text-sm text-muted-foreground">No appointment needed for passport photos</div>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    <span className="text-muted-foreground">Quick turnaround</span>
                   </div>
-
-                  <div className="flex gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <div className="font-semibold text-foreground">Same-Day Delivery</div>
-                      <div className="text-sm text-muted-foreground">Get your photos delivered on the same day</div>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    <span className="text-muted-foreground">Competitive pricing</span>
                   </div>
-
-                  <div className="flex gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <div className="font-semibold text-foreground">Experienced Team</div>
-                      <div className="text-sm text-muted-foreground">10+ years of professional photography expertise</div>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    <span className="text-muted-foreground">100% satisfaction guarantee</span>
                   </div>
                 </div>
               </div>

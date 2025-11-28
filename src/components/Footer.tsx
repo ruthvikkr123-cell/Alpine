@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import { Youtube, Instagram, Map } from "lucide-react";
 import alpineLogo from "@/assets/alpine-logo.png";
 
 export const Footer = () => {
@@ -9,17 +9,17 @@ export const Footer = () => {
           <div>
             <img src={alpineLogo} alt="Alpine Photo Studio" className="h-12 w-auto mb-4 brightness-0 invert" />
             <p className="text-background/80 mb-4">
-              Capturing moments, creating smiles. Your trusted photography studio for over 10 years.
+              Capturing moments, creating smiles. Your trusted photography studio for over 25+ years.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="bg-background/10 hover:bg-background/20 p-2 rounded-full transition-colors">
-                <Facebook className="h-5 w-5" />
+              <a href="https://youtube.com/@venu2104?si=HfN1VJ_DY9JwZtuN" target="_blank" rel="noopener noreferrer" className="bg-background/10 hover:bg-background/20 p-2 rounded-full transition-colors">
+                <Youtube className="h-5 w-5" />
               </a>
-              <a href="#" className="bg-background/10 hover:bg-background/20 p-2 rounded-full transition-colors">
+              <a href="https://www.instagram.com/alpine_photo_studio?igsh=eDlvYXI4cnMzaWdl" target="_blank" rel="noopener noreferrer" className="bg-background/10 hover:bg-background/20 p-2 rounded-full transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="bg-background/10 hover:bg-background/20 p-2 rounded-full transition-colors">
-                <Twitter className="h-5 w-5" />
+              <a href="https://maps.app.goo.gl/1szq5JApZD4PeYzh9" target="_blank" rel="noopener noreferrer" className="bg-background/10 hover:bg-background/20 p-2 rounded-full transition-colors">
+                <Map className="h-5 w-5" />
               </a>
             </div>
           </div>

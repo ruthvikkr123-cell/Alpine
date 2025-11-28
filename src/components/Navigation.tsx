@@ -54,7 +54,7 @@ export const Navigation = () => {
                 {link.name}
               </button>
             ))}
-            <Button variant="default" size="lg" className="gap-2">
+            <Button variant="default" size="lg" className="gap-2" onClick={() => scrollToSection("contact")}>
               <Phone className="h-4 w-4" />
               Book Now
             </Button>
